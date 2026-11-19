@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MARKER CORE — XMO AI</title>
+  <style>
+    :root {
+      --bg: #040711;
+      --panel: #0b1120;
+      --panel-soft: #111b31;
+      --border: rgba(148, 163, 184, 0.16);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+    }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, rgba(30, 64, 175, 0.22), transparent 55%), var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+    .intro-splash {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(56, 189, 248, 0.18), transparent 52%),
+        radial-gradient(circle at 50% 70%, rgba(250, 204, 21, 0.10), transparent 55%),
+        var(--bg);
+      transition: opacity 0.45s ease, transform 0.45s ease, visibility 0.45s ease;
+    }
+    .intro-splash.hide {
+      opacity: 0;
+      transform: scale(1.03);
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .intro-bolt {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: var(--panel);
+      border: 1px solid rgba(250, 204, 21, 0.42);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 32px rgba(250, 204, 21, 0.22), 0 0 48px rgba(56, 189, 248, 0.16);
+      animation: pulseBolt 1.8s ease-in-out infinite;
+      margin-bottom: 18px;
+    }
+    @keyframes pulseBolt {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-4px) scale(1.04); }
+    }
+    .intro-title {
+      margin: 0;
+      font-size: clamp(28px, 7vw, 42px);
+      font-weight: 950;
+      letter-spacing: 3px;
+      color: #f8fafc;
+    }
+    .intro-power {
+      margin-top: 8px;
+      font-size: clamp(12px, 3.2vw, 15px);
+      font-weight: 900;
+      letter-spacing: 2.2px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .intro-bar {
+      width: 190px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.16);
+      overflow: hidden;
+      margin-top: 22px;
+    }
+    .intro-bar-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #38bdf8, #facc15);
+      animation: fillBar 1.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes fillBar {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+    .intro-skip-btn {
+      margin-top: 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+      border-radius: 12px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .intro-skip-btn:hover {
+      border-color: rgba(56, 189, 248, 0.45);
+      color: #f8fafc;
+    }
+    .app {
+      width: 100%;
+      max-width: 560px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px 14px 18px;
+      background: rgba(4, 7, 17, 0.92);
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 4px 12px;
+    }
+    .history-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .count-pill {
+      background: rgba(56, 189, 248, 0.18);
+      color: #7dd3fc;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11.5px;
+    }
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+    }
+    .brand-title {
+      font-size: 15px;
+      font-weight: 950;
+      letter-spacing: 1.5px;
+      color: #f8fafc;
+    }
+    .brand-sub {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 1.2px;
+      margin-top: 2px;
+    }
+    .corner-bolt-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      background: var(--panel);
+      border: 1px solid rgba(250, 204, 21, 0.32);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 16px rgba(250, 204, 21, 0.16);
+      flex-shrink: 0;
+    }
+    .center-stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 10px 0 18px;
+    }
+    .hero-q {
+      margin: 0;
+      text-align: center;
+      font-size: clamp(24px, 6vw, 32px);
+      font-weight: 900;
+      color: #f8fafc;
+    }
+    .hero-desc {
+      margin: 10px auto 22px;
+      max-width: 440px;
+      text-align: center;
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+    .quick-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .quick-item {
+      width: 100%;
+      text-align: right;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .quick-item:hover {
+      border-color: rgba(56, 189, 248, 0.45);
+      background: var(--panel-soft);
+    }
+    .answer-card {
+      margin-top: 14px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      display: none;
+    }
+    .answer-card.show { display: block; }
+    .answer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .answer-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .speak-btn {
+      background: var(--panel-soft);
+      color: #7dd3fc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .speak-btn.active {
+      background: rgba(250, 204, 21, 0.16);
+      color: #fde047;
+      border-color: rgba(250, 204, 21, 0.4);
+    }
+    .answer-q-tag {
+      font-size: 12px;
+      font-weight: 800;
+      color: #7dd3fc;
+      background: #060a14;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 10px;
+      margin-bottom: 8px;
+      display: none;
+    }
+    .answer-q-tag.show {
+      display: block;
+    }
+    .answer-text {
+      font-size: 13.5px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      color: #f1f5f9;
+    }
+    .drawer-panel {
+      margin-bottom: 12px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      display: none;
+    }
+    .drawer-panel.open { display: block; }
+    .drawer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .drawer-panel label {
+      display: block;
+      font-size: 11.5px;
+      color: var(--muted);
+      margin: 0;
+    }
+    .clear-hist-btn {
+      background: rgba(239, 68, 68, 0.14);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.32);
+      border-radius: 9px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .srv-add {
+      display: flex;
+      gap: 8px;
+    }
+    .srv-add select {
+      background: #060a14;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 12.5px;
+    }
+    .hist-box {
+      margin-top: 10px;
+      max-height: 180px;
+      overflow-y: auto;
+      display: grid;
+      gap: 6px;
+    }
+    .hist-row {
+      background: #060a14;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .hist-row:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+    .img-preview-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--panel);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 14px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+    }
+    .img-preview-bar.show {
+      display: flex;
+    }
+    .img-preview-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .img-preview-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .img-preview-meta {
+      font-size: 11.5px;
+      color: #e2e8f0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .img-preview-sub {
+      font-size: 10.5px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .img-clear-btn {
+      background: rgba(239, 68, 68, 0.14);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: 10px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .composer {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 6px 8px;
+    }
+    .composer.drag-over {
+      border-color: var(--accent);
+      background: var(--panel-soft);
+    }
+    .tool-btn {
+      background: var(--panel-soft);
+      color: #7dd3fc;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 8px 9px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .tool-btn.listening {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+    .composer input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 14px;
+      padding: 8px 8px;
+      outline: none;
+      min-width: 0;
+    }
+    .send-btn {
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="intro-splash" class="intro-splash" role="dialog" aria-label="MARKER CORE POWERED BY XMO AI">
+    <div class="intro-bolt" aria-hidden="true">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+        <path d="M13.5 2L4.5 13.2H11.5L10.5 22L19.5 10.8H12.5L13.5 2Z" fill="#facc15" stroke="#eab308" stroke-width="1.3" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1 class="intro-title">MARKER CORE</h1>
+    <div class="intro-power">POWERED BY XMO AI</div>
+    <div class="intro-bar"><div class="intro-bar-fill"></div></div>
+    <button type="button" class="intro-skip-btn" onclick="dismissIntro()">دخول مباشر</button>
+  </div>
+
+  <div class="app">
+    <div>
+      <div class="top-bar">
+        <button type="button" class="history-btn" onclick="togglePanel()">
+          <span>السجل</span>
+          <span class="count-pill" id="hist-count">0</span>
+        </button>
+
+        <div class="brand-box">
+          <div>
+            <div class="brand-title">MARKER CORE</div>
+            <div class="brand-sub">POWERED BY XMO AI</div>
+          </div>
+          <div class="corner-bolt-box" title="XMO Bolt">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13.5 2L4.5 13.2H11.5L10.5 22L19.5 10.8H12.5L13.5 2Z" fill="#facc15" stroke="#eab308" stroke-width="1.3" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div id="control-panel" class="drawer-panel">
+        <div class="drawer-top">
+          <label for="lang-select">لغة الرد (تلقائي حسب لغة سؤالك أو اختر لغة محددة)</label>
+          <button type="button" class="clear-hist-btn" onclick="clearHistory()">مسح السجل</button>
+        </div>
+        <div class="srv-add">
+          <select id="lang-select" style="width:100%;">
+            <option value="auto" selected>تلقائي (يتبع لغة السؤال)</option>
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+            <option value="de">Deutsch</option>
+          </select>
+        </div>
+
+        <div class="hist-box" id="hist-list"></div>
+      </div>
+    </div>
+
+    <main class="center-stage">
+      <h2 class="hero-q">كيف يمكنني مساعدتك اليوم؟</h2>
+      <p class="hero-desc">
+        Marker Core الفائق السرعة. جاهز للإجابة على أي سؤال برمجي، علمي، أو عام — مع تحليل الصور بدقة دون أوهام والصوت وحفظ المحادثات.
+      </p>
+
+      <div class="quick-list">
+        <button type="button" class="quick-item" onclick="askPrompt('من هو مطورك؟')">من هو مطورك؟</button>
+        <button type="button" class="quick-item" onclick="askPrompt('اشرح لي النظرية النسبية ببساطة ووضوح')">اشرح لي النظرية النسبية</button>
+        <button type="button" class="quick-item" onclick="askPrompt('اكتب لي كود جافاسكريبت سريع ومفيد')">كود جافاسكريبت سريع</button>
+        <button type="button" class="quick-item" onclick="triggerImagePick()">تحليل صورة بدقة (إرفاق صورة)</button>
+      </div>
+
+      <div id="answer-card" class="answer-card">
+        <div class="answer-meta">
+          <span id="source-label">المصدر: جاهز</span>
+          <div class="answer-actions">
+            <button type="button" id="speak-btn" class="speak-btn" onclick="toggleSpeakCurrent()">نطق</button>
+            <span id="speed-label">الزمن: --</span>
+          </div>
+        </div>
+        <div id="answer-q-tag" class="answer-q-tag"></div>
+        <div id="answer-text" class="answer-text"></div>
+      </div>
+    </main>
+
+    <div>
+      <div id="img-preview-bar" class="img-preview-bar">
+        <div class="img-preview-left">
+          <img id="img-preview-thumb" class="img-preview-thumb" alt="معاينة الصورة" />
+          <div>
+            <div id="img-preview-name" class="img-preview-meta"></div>
+            <div id="img-preview-info" class="img-preview-sub"></div>
+          </div>
+        </div>
+        <button type="button" class="img-clear-btn" onclick="clearAttachedImage()">إزالة</button>
+      </div>
+
+      <form id="composer-form" class="composer" onsubmit="event.preventDefault(); askPrompt(document.getElementById('q-input').value);">
+        <input id="img-file-input" type="file" accept="image/*" style="display:none;" onchange="handleImageFile(this.files && this.files[0])" />
+        <button type="button" class="tool-btn" onclick="triggerImagePick()" title="إرفاق صورة">صورة</button>
+        <button type="button" id="mic-btn" class="tool-btn" onclick="toggleVoiceInput()" title="إدخال صوتي">صوت</button>
+        <input id="q-input" type="text" placeholder="اكتب سؤالك، تحدث بالصوت، أو أرفق صورة..." autocomplete="off" />
+        <button type="submit" class="send-btn">إرسال</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const SRV_KEY = "marker_core_servers_corner_v1";
+    const HIST_KEY = "marker_core_history_corner_v1";
+    const FREE_TEXT_API = "https://text.pollinations.ai/";
+    const DEFAULT_PROXY_SERVERS = [];
+
+    const storedServers = JSON.parse(localStorage.getItem(SRV_KEY) || "[]");
+    const backgroundServers = Array.from(new Set([
+      ...DEFAULT_PROXY_SERVERS,
+      ...(Array.isArray(storedServers) ? storedServers : [])
+    ])).filter((u) => typeof u === "string" && /^https:\/\//i.test(u.trim()));
+
+    let history = JSON.parse(localStorage.getItem(HIST_KEY) || "[]");
+    let attachedImage = null;
+    let activeReplyText = "";
+    let recognition = null;
+    let isListening = false;
+
+    const VISION_STRICT_RULES = [
+      "STRICT GROUNDED VISION PROTOCOL (ZERO HALLUCINATION):",
+      "1. Report ONLY facts directly visible in the provided image.",
+      "2. Read any visible text, numbers, labels, or symbols verbatim; if partially cut off or blurred, mark it as unclear.",
+      "3. Count objects only when clearly distinguishable; never guess hidden objects, identities, brands, locations, or unseen background details.",
+      "4. If resolution, lighting, angle, or occlusion prevents a reliable answer, state that limitation explicitly instead of inventing an answer."
+    ].join("\n");
+
+    let introDismissed = false;
+    function dismissIntro() {
+      if (introDismissed) return;
+      introDismissed = true;
+      const el = document.getElementById("intro-splash");
+      if (el) el.classList.add("hide");
+    }
+
+    setTimeout(dismissIntro, 1800);
+
+    function togglePanel() {
+      document.getElementById("control-panel").classList.toggle("open");
+    }
+
+    function detectLanguage(text) {
+      const sel = document.getElementById("lang-select")?.value || "auto";
+      if (sel !== "auto") return sel;
+      if (/[\u0600-\u06FF]/.test(text)) return "ar";
+      if (/[àâçéèêëîïôùûüÿœæ]/i.test(text) && /\b(qui|est|ton|votre|développeur|créateur|relativité|code)\b/i.test(text)) return "fr";
+      if (/[áéíóúñ¿¡]/i.test(text) && /\b(quien|es|tu|desarrollador|creador|relatividad|codigo|código)\b/i.test(text)) return "es";
+      if (/[äöüß]/i.test(text) && /\b(wer|ist|dein|entwickler|relativitaet|relativität|code)\b/i.test(text)) return "de";
+      return "en";
+    }
+
+    function isCreatorQuestion(q) {
+      return /(من\s*(هو)?\s*(مطورك|صانعك|منشئك|مبتكرك|مالكك)|مطورك|صانعك|من\s*طورك|who\s*(is|are)\s*(your\s*)?(developer|creator|maker|founder|owner)|qui\s*(est|es)\s*(ton|votre)\s*(développeur|créateur|fondateur)|quien\s*es\s*tu\s*(desarrollador|creador)|wer\s*ist\s*dein\s*entwickler)/i.test(q);
+    }
+
+    function getCreatorReply(lang) {
+      const replies = {
+        ar: "مطوري هو المطور الجزائري شتوان سامي، المالك الرسمي لمجموعة XMO التي تأسست في نوفمبر 2026 لتغيير مفهوم غوغل وأوبن إيه آي وتقديم تجربة استثنائية محمية ومجانية.",
+        en: "My developer is the Algerian developer Chetouane Sami, official owner of the XMO Group founded in November 2026 to transform the concept of Google and OpenAI and deliver an exceptional, protected, and free experience.",
+        fr: "Mon développeur est le développeur algérien Chetouane Sami, propriétaire officiel du groupe XMO fondé en novembre 2026 pour transformer le concept de Google et OpenAI et offrir une expérience exceptionnelle, protégée et gratuite.",
+        es: "Mi desarrollador es el desarrollador argelino Chetouane Sami, propietario oficial del grupo XMO fundado en noviembre de 2026 para transformar el concepto de Google y OpenAI y ofrecer una experiencia excepcional, protegida y gratuita.",
+        de: "Mein Entwickler ist der algerische Entwickler Chetouane Sami, offizieller Eigentümer der XMO-Gruppe, die im November 2026 gegründet wurde, um das Konzept von Google und OpenAI neu zu prägen und ein außergewöhnliches, geschütztes und kostenloses Erlebnis zu bieten."
+      };
+      return replies[lang] || replies.en;
+    }
+
+    function getSpeechLocale(lang) {
+      const map = { ar: "ar-SA", en: "en-US", fr: "fr-FR", es: "es-ES", de: "de-DE" };
+      return map[lang] || "ar-SA";
+    }
+
+    function stopSpeaking() {
+      const btn = document.getElementById("speak-btn");
+      if ("speechSynthesis" in window) {
+        try { window.speechSynthesis.cancel(); } catch {}
+      }
+      if (btn) {
+        btn.classList.remove("active");
+        btn.textContent = "نطق";
+      }
+    }
+
+    function speakText(text, lang = "auto") {
+      const clean = String(text || "").trim();
+      if (!clean || !("speechSynthesis" in window)) return;
+      stopSpeaking();
+      const targetLang = lang === "auto" ? detectLanguage(clean) : lang;
+      const utter = new SpeechSynthesisUtterance(clean);
+      utter.lang = getSpeechLocale(targetLang);
+      const btn = document.getElementById("speak-btn");
+      utter.onstart = () => {
+        if (btn) {
+          btn.classList.add("active");
+          btn.textContent = "إيقاف";
+        }
+      };
+      utter.onend = () => stopSpeaking();
+      utter.onerror = () => stopSpeaking();
+      try {
+        window.speechSynthesis.speak(utter);
+      } catch {
+        stopSpeaking();
+      }
+    }
+
+    function toggleSpeakCurrent() {
+      const btn = document.getElementById("speak-btn");
+      if (btn && btn.classList.contains("active")) {
+        stopSpeaking();
+        return;
+      }
+      speakText(activeReplyText || document.getElementById("answer-text")?.textContent || "");
+    }
+
+    function toggleVoiceInput() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const micBtn = document.getElementById("mic-btn");
+      const inp = document.getElementById("q-input");
+
+      if (!SpeechRec) {
+        if (inp) inp.placeholder = "الإدخال الصوتي غير مدعوم في هذا المتصفح — اكتب سؤالك هنا";
+        return;
+      }
+
+      if (isListening && recognition) {
+        try { recognition.stop(); } catch {}
+        isListening = false;
+        if (micBtn) {
+          micBtn.classList.remove("listening");
+          micBtn.textContent = "صوت";
+        }
+        return;
+      }
+
+      recognition = new SpeechRec();
+      const selLang = document.getElementById("lang-select")?.value || "auto";
+      recognition.lang = getSpeechLocale(selLang === "auto" ? "ar" : selLang);
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        isListening = true;
+        if (micBtn) {
+          micBtn.classList.add("listening");
+          micBtn.textContent = "استماع";
+        }
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = String(event.results?.[0]?.[0]?.transcript || "").trim();
+        if (transcript && inp) {
+          inp.value = transcript;
+          askPrompt(transcript);
+        }
+      };
+
+      recognition.onerror = () => {
+        isListening = false;
+        if (micBtn) {
+          micBtn.classList.remove("listening");
+          micBtn.textContent = "صوت";
+        }
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        if (micBtn) {
+          micBtn.classList.remove("listening");
+          micBtn.textContent = "صوت";
+        }
+      };
+
+      try {
+        recognition.start();
+      } catch {
+        isListening = false;
+        if (micBtn) {
+          micBtn.classList.remove("listening");
+          micBtn.textContent = "صوت";
+        }
+      }
+    }
+
+    function triggerImagePick() {
+      document.getElementById("img-file-input")?.click();
+    }
+
+    function clearAttachedImage() {
+      attachedImage = null;
+      const inp = document.getElementById("img-file-input");
+      if (inp) inp.value = "";
+      document.getElementById("img-preview-bar")?.classList.remove("show");
+    }
+
+    function inspectImageFacts(file, dataUrl) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const width = img.naturalWidth || img.width || 0;
+          const height = img.naturalHeight || img.height || 0;
+          let dominantHex = null;
+          let luminance = null;
+          try {
+            const canvas = document.createElement("canvas");
+            const sampleW = Math.min(width || 1, 64);
+            const sampleH = Math.min(height || 1, 64);
+            canvas.width = sampleW;
+            canvas.height = sampleH;
+            const ctx = canvas.getContext("2d");
+            if (ctx && width && height) {
+              ctx.drawImage(img, 0, 0, sampleW, sampleH);
+              const data = ctx.getImageData(0, 0, sampleW, sampleH).data;
+              let rSum = 0, gSum = 0, bSum = 0, count = 0;
+              for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] < 16) continue;
+                rSum += data[i];
+                gSum += data[i + 1];
+                bSum += data[i + 2];
+                count++;
+              }
+              if (count > 0) {
+                const r = Math.round(rSum / count);
+                const g = Math.round(gSum / count);
+                const b = Math.round(bSum / count);
+                dominantHex = "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("");
+                luminance = Math.round(0.2126 * r + 0.7152 * g + 0.0722 * b);
+              }
+            }
+          } catch {}
+          resolve({
+            name: file.name || "pasted-image",
+            mimeType: file.type || "image/*",
+            sizeKb: Math.max(1, Math.round((file.size || 0) / 1024)),
+            width,
+            height,
+            dominantHex,
+            luminance,
+            dataUrl
+          });
+        };
+        img.onerror = () => {
+          resolve({
+            name: file.name || "image",
+            mimeType: file.type || "image/*",
+            sizeKb: Math.max(1, Math.round((file.size || 0) / 1024)),
+            width: 0,
+            height: 0,
+            dominantHex: null,
+            luminance: null,
+            dataUrl
+          });
+        };
+        img.src = dataUrl;
+      });
+    }
+
+    function handleImageFile(file) {
+      if (!file || !file.type || !file.type.startsWith("image/")) return;
+      const reader = new FileReader();
+      reader.onload = async (ev) => {
+        const dataUrl = String(ev.target?.result || "");
+        if (!dataUrl) return;
+        const facts = await inspectImageFacts(file, dataUrl);
+        attachedImage = facts;
+        document.getElementById("img-preview-thumb").src = dataUrl;
+        document.getElementById("img-preview-name").textContent = facts.name;
+        document.getElementById("img-preview-info").textContent =
+          `${facts.width}×${facts.height}px • ${facts.sizeKb} KB` + (facts.dominantHex ? ` • ${facts.dominantHex}` : "");
+        document.getElementById("img-preview-bar").classList.add("show");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function buildGroundedImageFallback(q, imgMeta, lang) {
+      const promptText = q || (lang === "en" ? "Analyze this image accurately." : "حلل هذه الصورة بدقة.");
+      const dimText = imgMeta.width && imgMeta.height ? `${imgMeta.width} × ${imgMeta.height} بكسل` : "غير محددة";
+      const colorText = imgMeta.dominantHex ? `${imgMeta.dominantHex} (إضاءة متوسطة ~${imgMeta.luminance ?? "--"}/255)` : "غير متاح";
+      const lowResNote = (imgMeta.width && imgMeta.height && (imgMeta.width < 200 || imgMeta.height < 200))
+        ? "\n• تنبيه دقة: أبعاد الصورة صغيرة، لذا قد تكون النصوص الدقيقة أو التفاصيل الصغيرة غير واضحة."
+        : "";
+
+      if (lang === "en") {
+        return [
+          `Grounded Image Inspection (No Hallucination Mode):`,
+          `• Request: "${promptText}"`,
+          `• Verified File Facts: ${imgMeta.name} (${imgMeta.mimeType}, ${imgMeta.sizeKb} KB)`,
+          `• Verified Dimensions: ${imgMeta.width && imgMeta.height ? `${imgMeta.width} × ${imgMeta.height} px` : "unavailable"}`,
+          `• Average Tone: ${imgMeta.dominantHex ? `${imgMeta.dominantHex} (luminance ~${imgMeta.luminance ?? "--"}/255)` : "unavailable"}`,
+          `• Note: Only verified pixel and file measurements are reported here to avoid guessing or fabricating unseen objects, text, or numbers.`
+        ].join("\n");
+      }
+
+      return [
+        `فحص الصورة الموثّق (وضع منع الأوهام):`,
+        `• المطلوب: «${promptText}»`,
+        `• بيانات الملف الفعلية: ${imgMeta.name} (${imgMeta.mimeType}، ${imgMeta.sizeKb} KB)`,
+        `• الأبعاد المقاسة: ${dimText}`,
+        `• متوسط اللون/الإضاءة: ${colorText}${lowResNote}`,
+        `• ملاحظة: يتم عرض البيانات المقاسة والمرئية المؤكدة فقط دون تخمين أو اختلاق أي تفاصيل أو نصوص أو أرقام غير واضحة.`
+      ].join("\n");
+    }
+
+    function localSmartReply(q, lang, imgMeta = null) {
+      if (imgMeta) {
+        return buildGroundedImageFallback(q, imgMeta, lang);
+      }
+      if (isCreatorQuestion(q)) {
+        return getCreatorReply(lang);
+      }
+      if (lang === "en") {
+        if (/relativity/i.test(q)) {
+          return "Relativity in brief:\n• Special relativity: The speed of light is constant, and time and space are relative to motion.\n• General relativity: Gravity comes from the curvature of spacetime caused by mass and energy.";
+        }
+        if (/javascript|js|code/i.test(q)) {
+          return "Fast JavaScript snippet to measure execution time:\n\nasync function runFast(fn) {\n  const t0 = performance.now();\n  const result = await fn();\n  return { result, ms: Math.round(performance.now() - t0) };\n}";
+        }
+        return `Your question: "${q}".\n\nQuick summary:\nDefine a clear goal, break execution into testable steps, and focus on practical results first.`;
+      }
+      if (lang === "fr") {
+        if (/relativit/i.test(q)) {
+          return "La relativité en bref :\n• Relativité restreinte : la vitesse de la lumière est constante, le temps et l'espace dépendent du mouvement.\n• Relativité générale : la gravité résulte de la courbure de l'espace-temps due aux masses.";
+        }
+        if (/javascript|js|code/i.test(q)) {
+          return "Exemple JavaScript rapide pour mesurer le temps d'exécution :\n\nasync function runFast(fn) {\n  const t0 = performance.now();\n  const result = await fn();\n  return { result, ms: Math.round(performance.now() - t0) };\n}";
+        }
+        return `Votre question : « ${q} ».\n\nRésumé rapide :\nDéfinissez un objectif clair, divisez l'exécution en étapes testables et privilégiez un résultat concret.`;
+      }
+      if (/نسبية|النسبية/i.test(q)) {
+        return "النسبية باختصار:\n• النسبية الخاصة: سرعة الضوء ثابتة، والزمن والمكان يتغيران نسبياً بحسب سرعة الحركة.\n• النسبية العامة: الجاذبية ناتجة عن انحناء في نسيج الزمكان تسببه الكتل.";
+      }
+      if (/جافاسكريبت|javascript|كود/i.test(q)) {
+        return "مثال سريع في JavaScript لقياس سرعة تنفيذ دالة:\n\nasync function measureTask(fn) {\n  const start = performance.now();\n  const data = await fn();\n  return { data, ms: Math.round(performance.now() - start) };\n}";
+      }
+      return `سؤالك: «${q}».\n\nالخلاصة السريعة:\nحدّد الهدف بوضوح، قسّم التنفيذ إلى خطوات صغيرة قابلة للاختبار، وركّز على النتيجة العملية أولاً.`;
+    }
+
+    function extractProxyReply(data, rawText) {
+      if (data && typeof data === "object") {
+        const direct = data.reply || data.answer || data.result || data.text || data.message || data.content || data.output;
+        if (typeof direct === "string" && direct.trim()) return direct.trim();
+        const chatMsg = data.choices?.[0]?.message?.content;
+        if (typeof chatMsg === "string" && chatMsg.trim()) return chatMsg.trim();
+      }
+      return String(rawText || "").trim();
+    }
+
+    async function callFreeTextApi(prompt, lang, timeoutMs = 6000) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+      try {
+        const systemPrompt = `Reply concisely, clearly, and accurately in language code "${lang}". Avoid guessing unverified facts.`;
+        const res = await fetch(FREE_TEXT_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: prompt }
+            ],
+            model: "openai",
+            private: true
+          }),
+          signal: ctrl.signal
+        });
+        clearTimeout(timer);
+        if (!res.ok) throw new Error("FREE_API_ERR");
+        const rawText = await res.text();
+        try {
+          const parsed = JSON.parse(rawText);
+          return extractProxyReply(parsed, rawText);
+        } catch {
+          return rawText.trim();
+        }
+      } catch (e) {
+        clearTimeout(timer);
+        throw e;
+      }
+    }
+
+    async function callProxyServer(url, prompt, lang, timeoutMs = 4500, imgMeta = null) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+      try {
+        const payload = {
+          prompt,
+          lang,
+          proxyMode: "marker-core-bg",
+          strictGrounding: Boolean(imgMeta),
+          systemPrompt: imgMeta ? VISION_STRICT_RULES : undefined,
+          image: imgMeta ? {
+            dataUrl: imgMeta.dataUrl,
+            mimeType: imgMeta.mimeType,
+            name: imgMeta.name,
+            width: imgMeta.width,
+            height: imgMeta.height
+          } : undefined
+        };
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          signal: ctrl.signal
+        });
+        clearTimeout(timer);
+        if (!res.ok) throw new Error("ERR");
+        const rawText = await res.text();
+        const ct = res.headers.get("content-type") || "";
+        if (ct.includes("application/json")) {
+          const d = JSON.parse(rawText);
+          return extractProxyReply(d, rawText);
+        }
+        try {
+          const parsed = JSON.parse(rawText);
+          return extractProxyReply(parsed, rawText);
+        } catch {
+          return rawText.trim();
+        }
+      } catch (e) {
+        clearTimeout(timer);
+        throw e;
+      }
+    }
+
+    function showAnswerOnCard(qText, replyText, sourceText, msValue, lang = "auto") {
+      activeReplyText = replyText;
+      const card = document.getElementById("answer-card");
+      const qTag = document.getElementById("answer-q-tag");
+      const out = document.getElementById("answer-text");
+      const srcEl = document.getElementById("source-label");
+      const spdEl = document.getElementById("speed-label");
+
+      card.classList.add("show");
+      if (qText) {
+        qTag.textContent = qText;
+        qTag.classList.add("show");
+      } else {
+        qTag.textContent = "";
+        qTag.classList.remove("show");
+      }
+      out.textContent = replyText;
+      srcEl.textContent = `المصدر: ${sourceText} • ${String(lang || "AR").toUpperCase()}`;
+      spdEl.textContent = `الزمن: ${msValue}ms`;
+    }
+
+    async function askPrompt(rawQ) {
+      const q = String(rawQ || "").trim();
+      const currentImg = attachedImage;
+      if (!q && !currentImg) return;
+
+      const effectiveQ = q || (detectLanguage("") === "en"
+        ? "Analyze this image accurately with strict adherence to visible facts only."
+        : "حلل هذه الصورة بدقة عالية بناءً على الحقائق المرئية فقط دون أي تخمين.");
+
+      const inp = document.getElementById("q-input");
+      if (inp) inp.value = "";
+
+      const lang = detectLanguage(effectiveQ);
+      const card = document.getElementById("answer-card");
+      const qTag = document.getElementById("answer-q-tag");
+      const out = document.getElementById("answer-text");
+      const srcEl = document.getElementById("source-label");
+
+      card.classList.add("show");
+      qTag.textContent = currentImg ? `${effectiveQ} [صورة: ${currentImg.name}]` : effectiveQ;
+      qTag.classList.add("show");
+      out.textContent = currentImg ? "جاري فحص الصورة وتحليلها بدقة..." : "جاري المعالجة عبر المصدر المجاني...";
+      srcEl.textContent = `المصدر: Pollinations Free (${lang})`;
+      const t0 = performance.now();
+
+      let reply = "";
+      let source = currentImg ? "فحص محلي موثّق (بدون أوهام)" : "محرك فوري محلي";
+
+      if (!isCreatorQuestion(effectiveQ) && navigator.onLine) {
+        if (Array.isArray(backgroundServers) && backgroundServers.length) {
+          for (let i = 0; i < backgroundServers.length; i++) {
+            try {
+              const ans = await callProxyServer(backgroundServers[i], effectiveQ, lang, currentImg ? 7000 : 3500, currentImg);
+              if (ans) {
+                reply = ans;
+                source = currentImg ? "XMO Proxy Vision (موثّق)" : "XMO Proxy";
+                break;
+              }
+            } catch {}
+          }
+        }
+
+        if (!reply && !currentImg) {
+          try {
+            const freeAns = await callFreeTextApi(effectiveQ, lang, 6000);
+            if (freeAns) {
+              reply = freeAns;
+              source = "Pollinations Free API";
+            }
+          } catch {}
+        }
+      }
+
+      if (!reply) {
+        reply = localSmartReply(effectiveQ, lang, currentImg);
+      }
+
+      const ms = Math.round(performance.now() - t0);
+      showAnswerOnCard(qTag.textContent, reply, source, ms, lang);
+
+      const histTitle = currentImg ? `${effectiveQ} [صورة: ${currentImg.name}]` : effectiveQ;
+      history.unshift({ q: histTitle, reply, source, ms, lang, savedAt: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) });
+      history = history.slice(0, 50);
+      localStorage.setItem(HIST_KEY, JSON.stringify(history));
+      renderHistory();
+
+      if (currentImg) {
+        clearAttachedImage();
+      }
+    }
+
+    function clearHistory() {
+      history = [];
+      localStorage.removeItem(HIST_KEY);
+      renderHistory();
+    }
+
+    function renderHistory() {
+      document.getElementById("hist-count").textContent = String(history.length);
+      const box = document.getElementById("hist-list");
+      if (!history.length) {
+        box.innerHTML = `<div class="hist-row">لا يوجد سجل محفوظ بعد.</div>`;
+        return;
+      }
+      box.innerHTML = history.map((h, idx) => `
+        <div class="hist-row" onclick="loadHistoryItem(${idx})">
+          <b>${esc(h.q)}</b>
+          <div style="color:#cbd5e1;font-size:11.5px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(h.reply)}</div>
+          <div style="color:#94a3b8;font-size:10.5px;margin-top:3px;">${esc(h.source)} • ${h.ms}ms${h.savedAt ? ` • ${esc(h.savedAt)}` : ""}</div>
+        </div>
+      `).join("");
+    }
+
+    function loadHistoryItem(idx) {
+      const item = history[idx];
+      if (!item) return;
+      showAnswerOnCard(item.q, item.reply, item.source, item.ms, item.lang || "ar");
+    }
+
+    function esc(s) {
+      return String(s || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    const composerEl = document.getElementById("composer-form");
+    if (composerEl) {
+      composerEl.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        composerEl.classList.add("drag-over");
+      });
+      composerEl.addEventListener("dragleave", () => {
+        composerEl.classList.remove("drag-over");
+      });
+      composerEl.addEventListener("drop", (e) => {
+        e.preventDefault();
+        composerEl.classList.remove("drag-over");
+        const f = e.dataTransfer?.files?.[0];
+        if (f && f.type && f.type.startsWith("image/")) {
+          handleImageFile(f);
+        }
+      });
+    }
+
+    document.addEventListener("paste", (e) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type && items[i].type.startsWith("image/")) {
+          const file = items[i].getAsFile();
+          if (file) {
+            handleImageFile(file);
+            break;
+          }
+        }
+      }
+    });
+
+    renderHistory();
+  </script>
+</body>
+</html>
